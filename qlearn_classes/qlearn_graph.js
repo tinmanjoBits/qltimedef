@@ -11,6 +11,66 @@ class QLearnGraph {
   }
 
   drawQLGraph() {
+    let maxReward = max(rewards);
+    let minReward = min(rewards);
+
+    stroke(0);
+    strokeWeight(2);
+    fill(255);
+    rect(this.graphLeft, this.graphTop, this.graphWidth, this.graphHeight);
+
+    // plot the rewards
+    for (let i = 0; i < rewards.length - 1; i++) {
+      let x1 = map(
+        i,
+        0,
+        rewards.length - 1,
+        this.graphLeft,
+        this.graphLeft + this.graphWidth
+      );
+      let y1 = map(
+        rewards[i],
+        minReward,
+        maxReward,
+        this.graphTop + this.graphHeight,
+        this.graphTop
+      );
+      let x2 = map(
+        i + 1,
+        0,
+        rewards.length - 1,
+        this.graphLeft,
+        this.graphLeft + this.graphWidth
+      );
+      let y2 = map(
+        rewards[i + 1],
+        minReward,
+        maxReward,
+        this.graphTop + this.graphHeight,
+        this.graphTop
+      );
+      line(x1, y1, x2, y2);
+    }
+
+    // draw the x-axis
+    stroke(0);
+    strokeWeight(1);
+    line(
+      this.graphLeft,
+      this.graphTop + this.graphHeight / 2,
+      this.graphLeft + this.graphWidth,
+      this.graphTop + this.graphHeight / 2
+    );
+    fill(0);
+    stroke(0);
+    text(
+      `Average Reward: ${(this.sum / rewards.length).toFixed(2)}`,
+      GAMEFRAME_WIDTH * 2 + 30,
+      20
+    );
+  }
+
+  drawQLGraphOld() {
     // background(255);
     noFill();
     stroke(0);
@@ -57,11 +117,19 @@ class QLearnGraph {
 
     fill(0);
     stroke(0);
-    text(
-      `Average Reward: ${(this.sum / rewards.length).toFixed(2)}`,
-      GAMEFRAME_WIDTH,
-      20
-    );
+
+    let k = this.calculateAvgReward();
+    text(`Average Reward: ${k.toFixed(2)}`, GAMEFRAME_WIDTH * 2, 20);
     //text(`Average Error: ${avgError.toFixed(2)}`, GAMEFRAME_WIDTH, 40);
+  }
+
+  calculateAvgReward() {
+    let sum = 0;
+
+    for (let i = 0; i < rewards.length; i++) {
+      sum += rewards[i];
+    }
+
+    return sum / rewards.length;
   }
 }

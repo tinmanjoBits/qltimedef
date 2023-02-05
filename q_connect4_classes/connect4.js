@@ -17,6 +17,10 @@ class Connect4 {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
     this.winner = -1000;
+
+    this.gamesAIWon = 0;
+    this.gamesRandomWon = 0;
+    this.gameDraws = 0;
   }
 
   resetBoard() {
@@ -194,15 +198,21 @@ class Connect4 {
       //text("Draw:", width / 2, height / 2);
       logMessage("It is a draw, no one won!");
       this.currentAgentReward = 0.5;
+
+      this.gameDraws++;
     } else if (this.winner === 1) {
       fill(0);
       let player;
       if (game.turn === 1) {
         player = "Agent";
+        this.aiScore++;
         this.currentAgentReward = 1;
+        this.gamesAIWon++;
       } else {
         player = "Random";
         this.currentAgentReward = -1;
+
+        this.gamesRandomWon++;
       }
       // debugger;
       logMessage("Player:" + player + " has won!");

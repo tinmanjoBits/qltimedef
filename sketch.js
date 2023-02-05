@@ -58,7 +58,20 @@ function doConnect4Loop() {
   game.renderWorld();
   stroke(0);
   fill(0);
-  text("Total reward:" + env.totalRewards, GAMEFRAME_WIDTH, 40);
+  text("Total reward:" + env.totalRewards, GAMEFRAME_WIDTH * 2 + 30, 40);
+
+  let gamesPlayed = game.gamesAIWon + game.gamesRandomWon + game.gameDraws;
+  let aiLost = game.gamesRandomWon + game.gamesAIWon - game.gamesAIWon;
+  let gamesDrawn = game.gameDraws;
+  text("Games played:" + gamesPlayed, GAMEFRAME_WIDTH * 2 + 30, 60);
+
+  text(
+    "Games Agent: (won)" + game.gamesAIWon + " (lost) " + aiLost,
+    GAMEFRAME_WIDTH * 2 + 30,
+    80
+  );
+
+  text("Games drawn:" + gamesDrawn, GAMEFRAME_WIDTH * 2 + 30, 100);
   drawConsole();
   qGraph.drawQLGraph();
   game.updateWorld();
