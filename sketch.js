@@ -1,0 +1,216 @@
+/* eslint-disable no-undef, no-unused-vars */
+
+const GAMEFRAME_WIDTH = 256;
+const GAMEFRAME_HEIGHT = 256;
+let gridSize = 20; // size of each grid cell
+let rows, cols; // number of rows and columns in the grid
+
+let game;
+let env;
+let qlearn;
+let rewards = [];
+let avgRewards = [];
+let errors = [];
+let messages = [];
+let consoleHeight = GAMEFRAME_HEIGHT;
+let isPAUSED = false;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  rows = height / gridSize;
+  cols = width / gridSize;
+
+  // setupAvoidTheFox();
+  game = setConnect4();
+
+  p = createP("hello");
+}
+
+function setupAvoidTheFox() {
+  // rabbit = new Rabbit(floor(random(cols)), floor(random(rows)));
+  // fox = new Fox(floor(random(cols)), floor(random(rows)));
+  // env = new Environment(game);
+  // qlearn = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
+  // game = new AvoidTheFoxGame(rows, cols, fox, rabbit, 0);
+}
+
+function doAvoidTheFoxLoop() {
+  // game.renderWorld();
+  // drawGraph();
+  // env.trainSteps();
+  // game.updateWorld();
+  // p.data = "hhhh";
+}
+
+function setConnect4() {
+  game = new Connect4(GAMEFRAME_WIDTH, GAMEFRAME_HEIGHT);
+  env = new Environment(game);
+  qlearn = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
+  logMessage("New Game");
+
+  return game;
+}
+
+function doConnect4Loop() {
+  game.renderWorld();
+  stroke(0);
+  fill(0);
+  text("Total reward:" + env.totalRewards, GAMEFRAME_WIDTH, 40);
+  drawConsole();
+  drawGraph2d();
+  game.updateWorld();
+}
+
+function draw() {
+  doConnect4Loop();
+
+  if (!isPAUSED) {
+    // slow things down a little
+    if ((frameCount % 60) * 1 === 0) {
+      game.playerMouseControls();
+    }
+  }
+}
+
+function keyPressed() {
+  game.playerKeyControls();
+}
+
+function drawConsole() {
+  // Draw the console background
+  fill(0);
+  rect(0, GAMEFRAME_HEIGHT, width, consoleHeight);
+
+  // Display messages in the console
+  fill(255, 0, 0);
+  textSize(12);
+  let y = GAMEFRAME_HEIGHT;
+  for (let i = 0; i < messages.length; i++) {
+    text(messages[i], 10, 18 + y);
+    y += 20;
+  }
+
+  // Remove oldest message if the console is full
+  if (messages.length > consoleHeight / 20) {
+    messages.shift();
+  }
+}
+
+function logMessage(message) {
+  messages.push(message);
+}
+
+function mousePressed() {
+  // ignore pressed outside the game window
+  if (
+    mouseX < 0 ||
+    mouseX > GAMEFRAME_WIDTH ||
+    mouseY < 0 ||
+    mouseY > GAMEFRAME_HEIGHT
+  ) {
+  } else {
+    isPAUSED = !isPAUSED;
+    // game.playerMouseControls();
+  }
+
+  logMessage(random());
+}
+
+function drawGraph() {
+  // Draw the graphs
+  let avgReward = 0;
+  let avgError = 0;
+  for (let i = 0; i < rewards.length; i++) {
+    avgReward += rewards[i];
+    avgError += errors[i];
+  }
+  avgReward /= rewards.length;
+  avgError /= errors.length;
+
+  fill(255);
+  text(`Average Reward: ${avgReward.toFixed(2)}`, 10, 20);
+  text(`Average Error: ${avgError.toFixed(2)}`, 10, 40);
+
+  // Draw the line graph of rewards
+  let x = 0;
+  let y = GAMEFRAME_HEIGHT - avgReward * 50;
+  stroke(255, 0, 0);
+  strokeWeight(2);
+  for (let i = 0; i < rewards.length; i++) {
+    let nextX = x + GAMEFRAME_WIDTH / rewards.length;
+    let nextY = GAMEFRAME_HEIGHT - rewards[i] * 50;
+    line(x + GAMEFRAME_WIDTH, y + GAMEFRAME_HEIGHT, nextX, nextY);
+    x = nextX;
+    y = nextY;
+  }
+
+  // Draw the line graph of errors
+  x = 0;
+  y = GAMEFRAME_HEIGHT - avgError * 50;
+  stroke(0, 255, 0);
+  strokeWeight(2);
+  for (let i = 0; i < errors.length; i++) {
+    let nextX = x + GAMEFRAME_WIDTH / errors.length;
+    let nextY = GAMEFRAME_HEIGHT - errors[i] * 50;
+    line(x + GAMEFRAME_WIDTH, y + GAMEFRAME_HEIGHT, nextX, nextY);
+    x = nextX;
+    y = nextY;
+  }
+  fill(0);
+  stroke(1);
+}
+
+function drawGraph2d() {
+  let graphLeft = GAMEFRAME_WIDTH + 10;
+  let graphTop = 0;
+  let graphWidth = GAMEFRAME_WIDTH;
+  let graphHeight = GAMEFRAME_HEIGHT;
+  let maxLength = 1000;
+  let sum = 0;
+
+  // background(255);
+  noFill();
+  stroke(0);
+  rect(graphLeft, graphTop, graphWidth, graphHeight);
+
+  // Add new reward to the rewards array
+  rewards.push(random(0, 1));
+
+  // Keep the rewards array to a maximum length
+  if (rewards.length > maxLength) {
+    rewards.shift();
+  }
+
+  // Calculate the average reward
+  sum += rewards[rewards.length - 1];
+  avgRewards.push(sum / rewards.length);
+
+  // Keep the average rewards array to a maximum length
+  if (avgRewards.length > maxLength) {
+    avgRewards.shift();
+  }
+
+  // Plot the average rewards
+  stroke(255, 0, 0);
+  beginShape();
+  for (let i = 0; i < avgRewards.length; i++) {
+    let x = map(i, 0, maxLength, graphLeft, graphLeft + graphWidth);
+    let y = map(avgRewards[i], 0, 1, graphTop + graphHeight, graphTop);
+    vertex(x, y);
+  }
+  endShape();
+
+  fill(0);
+  stroke(0);
+  text(
+    `Average Reward: ${(sum / rewards.length).toFixed(2)}`,
+    GAMEFRAME_WIDTH,
+    20
+  );
+  //text(`Average Error: ${avgError.toFixed(2)}`, GAMEFRAME_WIDTH, 40);
+}
+
+// This Redraws the Canvas when resized
+windowResized = function () {
+  resizeCanvas(windowWidth, windowHeight);
+};
