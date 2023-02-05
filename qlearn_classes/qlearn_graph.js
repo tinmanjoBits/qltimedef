@@ -111,57 +111,14 @@ class QLearnGraph {
     );
   }
 
-  drawQLGraphOld() {
-    // background(255);
-    noFill();
-    stroke(0);
-    rect(this.graphLeft, this.graphTop, this.graphWidth, this.graphHeight);
-
-    // Add new reward to the rewards array
-    //rewards.push(random(0, 1));
-
-    // Keep the rewards array to a maximum length
-    if (rewards.length > this.maxLength) {
+  clearOldData() {
+    if (rewards.length > 2000) {
       rewards.shift();
     }
 
-    // Calculate the average reward
-    this.sum += rewards[rewards.length - 1];
-    avgRewards.push(this.sum / rewards.length);
-
-    // Keep the average rewards array to a maximum length
-    if (avgRewards.length > this.maxLength) {
-      avgRewards.shift();
+    if (opponentRewards.length > 2000) {
+      opponentRewards.shift();
     }
-
-    // Plot the average rewards
-    stroke(255, 0, 0);
-    beginShape();
-    for (let i = 0; i < avgRewards.length; i++) {
-      let x = map(
-        i,
-        0,
-        this.maxLength,
-        this.graphLeft,
-        this.graphLeft + this.graphWidth
-      );
-      let y = map(
-        avgRewards[i],
-        0,
-        1,
-        this.graphTop + this.graphHeight,
-        this.graphTop
-      );
-      vertex(x, y);
-    }
-    endShape();
-
-    fill(0);
-    stroke(0);
-
-    let k = this.calculateAvgReward();
-    text(`Average Reward: ${k.toFixed(2)}`, GAMEFRAME_WIDTH * 2, 20);
-    //text(`Average Error: ${avgError.toFixed(2)}`, GAMEFRAME_WIDTH, 40);
   }
 
   calculateAvgReward() {

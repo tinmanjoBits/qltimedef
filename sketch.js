@@ -111,6 +111,7 @@ function draw() {
     if ((frameCount % frameCountSlider.value()) * 10 === 0) {
       game.updateWorld();
       game.playerMouseControls();
+      qGraph.clearOldData();
     }
   }
 }
