@@ -98,7 +98,7 @@ function doConnect4Loop() {
     140
   );
   drawConsole();
-  drawConsole();
+
   qGraph.drawQLGraph();
 }
 
