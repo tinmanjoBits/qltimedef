@@ -12,7 +12,7 @@ class Environment {
     this.oldAgent = null;
     this.agentsVersion = 0;
     this.incReward = REWARD_SCALE;
-    this.doRandom = false;
+    this.doneRandom = false;
   }
 
   getTerminalStatus() {
@@ -49,6 +49,7 @@ class Environment {
     } else {
       // Check if the first threshold is met, if so change set the old Qtable to the old agent
       if (floor(this.totalRewards) > this.incReward - 1) {
+        this.doneRandom = true;
         this.oldAgent = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
 
         this.oldAgent.qValues = Array.from(qlearn.qValues);
