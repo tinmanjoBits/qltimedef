@@ -11,15 +11,21 @@ class QLearnGraph {
   }
 
   drawQLGraph() {
+    // Q learn agent
     let maxReward = max(rewards);
     let minReward = min(rewards);
 
+    // random or old agent through self-play
+    let maxOpReward = max(opponentRewards);
+    let minOpReward = min(opponentRewards);
+
+    // Draw graph window
     stroke(0);
     strokeWeight(2);
     fill(255);
     rect(this.graphLeft, this.graphTop, this.graphWidth, this.graphHeight);
 
-    // plot the rewards
+    // plot the rewards for agent
     for (let i = 0; i < rewards.length - 1; i++) {
       let x1 = map(
         i,
@@ -49,6 +55,41 @@ class QLearnGraph {
         this.graphTop + this.graphHeight,
         this.graphTop
       );
+      line(x1, y1, x2, y2);
+    }
+
+    // plot the rewards for the random or old agent
+    for (let i = 0; i < opponentRewards.length - 1; i++) {
+      let x1 = map(
+        i,
+        0,
+        opponentRewards.length - 1,
+        this.graphLeft,
+        this.graphLeft + this.graphWidth
+      );
+      let y1 = map(
+        opponentRewards[i],
+        minOpReward,
+        maxOpReward,
+        this.graphTop + this.graphHeight,
+        this.graphTop
+      );
+      let x2 = map(
+        i + 1,
+        0,
+        opponentRewards.length - 1,
+        this.graphLeft,
+        this.graphLeft + this.graphWidth
+      );
+      let y2 = map(
+        opponentRewards[i + 1],
+        minOpReward,
+        maxOpReward,
+        this.graphTop + this.graphHeight,
+        this.graphTop
+      );
+
+      stroke(255, 0, 0);
       line(x1, y1, x2, y2);
     }
 

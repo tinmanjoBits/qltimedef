@@ -16,6 +16,7 @@ let consoleHeight = GAMEFRAME_HEIGHT;
 let isPAUSED = false;
 let qGraph;
 let frameCountSlider;
+let opponentRewards = [];
 
 let test;
 
@@ -86,6 +87,17 @@ function doConnect4Loop() {
 
   text("Games drawn:" + gamesDrawn, GAMEFRAME_WIDTH * 2 + 30, 100);
   text("QTable size:" + qlearn.qValues.length, GAMEFRAME_WIDTH * 2 + 30, 120);
+
+  text(
+    "Agents version:" +
+      env.agentsVersion +
+      ", Next Reward threshold (" +
+      env.incReward +
+      ")",
+    GAMEFRAME_WIDTH * 2 + 30,
+    140
+  );
+  drawConsole();
   drawConsole();
   qGraph.drawQLGraph();
 }

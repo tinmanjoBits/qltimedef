@@ -21,6 +21,8 @@ class Connect4 {
     this.gamesAIWon = 0;
     this.gamesRandomWon = 0;
     this.gameDraws = 0;
+
+    this.opponentsRewards = 0;
   }
 
   resetBoard() {
@@ -197,7 +199,12 @@ class Connect4 {
       fill(0);
       //text("Draw:", width / 2, height / 2);
       logMessage("It is a draw, no one won!");
+
+      // agent gets a slight reward for not loosing
       this.currentAgentReward = 0.5;
+
+      // random or old agent gets a slight reward for not losing
+      this.opponentsRewards += 0.5;
 
       this.gameDraws++;
     } else if (this.winner === 1) {
@@ -208,11 +215,16 @@ class Connect4 {
 
         this.currentAgentReward = 2;
         this.gamesAIWon++;
+
+        // random or old agent reward negative for losing
+        this.opponentsRewards -= 1;
       } else {
         player = "Random";
         this.currentAgentReward = -1;
 
         this.gamesRandomWon++;
+        // random or old agent reward postive for winning
+        this.opponentsRewards += 2;
       }
       // debugger;
       logMessage("Player:" + player + " has won!");
