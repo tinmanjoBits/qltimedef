@@ -199,6 +199,7 @@ function drawGraph2d() {
     vertex(x, y);
   }
   endShape();
+  // teext
 
   fill(0);
   stroke(0);
