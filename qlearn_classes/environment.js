@@ -26,7 +26,7 @@ class Environment {
   }
 
   getActions() {
-    return game.getActions();
+    return this.game.getActions();
   }
 
   reset() {
@@ -49,30 +49,30 @@ class Environment {
       this.endOfGame = game.gameOver;
 
       if (!this.endOfGame) {
-        if (game.turn === 0) {
-          game.fox.move(); // Fox moves randomly
-          game.turn = 1;
-        } else if (game.turn === 1) {
+        if (this.game.turn === 0) {
+          this.game.fox.move(); // Fox moves randomly
+          thisgame.turn = 1;
+        } else if (this.game.turn === 1) {
           let currentState = this.getCurrentState();
           let action = qlearn.chooseAction(currentState);
-          game.takeAction(action); // Move the rabbit according to the action chosen by the Q-Learning agent
+          this.game.takeAction(action); // Move the rabbit according to the action chosen by the Q-Learning agent
           let nextState = this.getCurrentState();
-          let rewardThisTurn = game.getReward();
+          let rewardThisTurn = this.game.getReward();
           this.totalRewards += rewardThisTurn;
 
           qlearn.updateQValues(currentState, action, rewardThisTurn, nextState);
 
           rewards.push(this.totalRewards);
           errors.push(1);
-          game.turn = 0; // foxes turn
+          this.game.turn = 0; // foxes turn
         }
       } else {
         this.currentEpisode++;
         // reset for next game
-        game.reset();
+        this.game.reset();
 
         this.endOfGame = false; // game.getTerminalStatus();
-        game.turn = 0;
+        this.game.turn = 0;
       }
     } else {
       // End training
@@ -93,9 +93,9 @@ class Environment {
     let currentState = this.getCurrentState();
 
     let action = qlearn.chooseAction(currentState);
-    game.takeAction(action);
+    this.game.takeAction(action);
     let nextState = this.getCurrentState();
-    let rewardThisTurn = game.getReward();
+    let rewardThisTurn = this.game.getReward();
 
     // set rewards
     // if (this.game.winner === 1 && this.game.turn === -1) {

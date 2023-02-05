@@ -15,6 +15,9 @@ let messages = [];
 let consoleHeight = GAMEFRAME_HEIGHT;
 let isPAUSED = false;
 let qGraph;
+let frameCountSlider;
+
+let test;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -25,6 +28,16 @@ function setup() {
   game = setConnect4();
 
   p = createP("hello");
+  frameCountSlider = createSlider(1, 1000, 1);
+  frameCountSlider.position(10, GAMEFRAME_HEIGHT * 2 + 30);
+
+  // let testGame = new TestGame();
+  // env = new Environment(testGame);
+  // test = new QLearningTest();
+  // test.runTests();
+
+  // let QL = new QLTEST(4, 2, 0.2, 0.9, 0.2);
+  // testQLearning(QL);
 }
 
 function setupAvoidTheFox() {
@@ -72,17 +85,19 @@ function doConnect4Loop() {
   );
 
   text("Games drawn:" + gamesDrawn, GAMEFRAME_WIDTH * 2 + 30, 100);
+  text("QTable size:" + qlearn.qValues.length, GAMEFRAME_WIDTH * 2 + 30, 120);
   drawConsole();
   qGraph.drawQLGraph();
-  game.updateWorld();
 }
 
 function draw() {
+  background(255);
   doConnect4Loop();
 
   if (!isPAUSED) {
     // slow things down a little
-    if ((frameCount % 60) * 1 === 0) {
+    if ((frameCount % frameCountSlider.value()) * 10 === 0) {
+      game.updateWorld();
       game.playerMouseControls();
     }
   }
@@ -105,15 +120,14 @@ function drawConsole() {
     text(messages[i], 10, 18 + y);
     y += 20;
   }
-
-  // Remove oldest message if the console is full
-  if (messages.length > consoleHeight / 20) {
-    messages.shift();
-  }
 }
 
 function logMessage(message) {
   messages.push(message);
+  // Remove oldest message if the console is full
+  if (messages.length > GAMEFRAME_HEIGHT / 20) {
+    messages.shift();
+  }
 }
 
 function mousePressed() {
@@ -180,3 +194,30 @@ function drawGraph() {
 windowResized = function () {
   resizeCanvas(windowWidth, windowHeight);
 };
+
+function testQLearning(ql_test) {
+  let input = [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+  ];
+  let expectedOutput = [0, 1, 1, 0];
+  let rewards = [];
+  let actions = [];
+  let errors = [];
+
+  for (let i = 0; i < input.length; i++) {
+    let state = input[i];
+    let action = ql_test.chooseAction(state);
+    let reward = expectedOutput[i] === action ? 1 : -1;
+    rewards.push(reward);
+    actions.push(action);
+    errors.push(Math.abs(expectedOutput[i] - action));
+    ql_test.updateQ(state, action, reward);
+  }
+
+  console.log("Rewards: ", rewards);
+  console.log("Actions: ", actions);
+  console.log("Errors: ", errors);
+}

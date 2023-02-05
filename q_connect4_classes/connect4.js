@@ -205,8 +205,8 @@ class Connect4 {
       let player;
       if (game.turn === 1) {
         player = "Agent";
-        this.aiScore++;
-        this.currentAgentReward = 1;
+
+        this.currentAgentReward = 2;
         this.gamesAIWon++;
       } else {
         player = "Random";
