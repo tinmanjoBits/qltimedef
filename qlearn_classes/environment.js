@@ -11,7 +11,7 @@ class Environment {
     this.totalRewards = 0;
     this.oldAgent = null;
     this.agentsVersion = 0;
-    this.incReward = 100;
+    this.incReward = REWARD_SCALE;
   }
 
   getTerminalStatus() {
@@ -39,13 +39,10 @@ class Environment {
   getRandomAction() {
     let actions = this.getActions();
 
-    if (floor(this.totalRewards) === 100) {
-      debugger;
-    }
     // if the rewards is 50 plus on the agent, use the current Qtable to get it to self-play
     if (
       this.totalRewards >= this.incReward - 1 &&
-      this.totalRewards % 100 === 0
+      this.totalRewards % REWARD_SCALE === 0
     ) {
       this.oldAgent = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
 
@@ -57,7 +54,7 @@ class Environment {
       let action = this.oldAgent.chooseAction(currentState);
 
       // increase reward check
-      this.incReward += 100;
+      this.incReward += REWARD_SCALE;
       return action;
     } else {
       let randomIndex = Math.floor(Math.random() * actions.length);
