@@ -22,6 +22,11 @@ class QLearnTurnBased {
     }
   }
 
+  chooseLastAgentAction(state) {
+    // Exploit: select the action with the highest Q-value
+    return this.getMaxQAction(state);
+  }
+
   getMaxQAction(state) {
     let actions = this.env.getActions(state);
     let qValues = actions.map((action) => this.getQValue(state, action));

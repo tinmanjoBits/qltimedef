@@ -53,24 +53,23 @@ class Environment {
     } else {
       //debugger;
       // Check if the first threshold is met, if so change set the old Qtable to the old agent
-      if (floor(this.totalRewards) === this.incReward) {
-        this.oldAgent = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
+      if (floor(this.totalRewards) > this.incReward - 1) {
+        this.oldAgent = new QLearnTurnBased(this, ALPHA, GAMMA, EPSILON);
 
         this.oldAgent.qValues = Array.from(qlearn.qValues);
 
         let currentState = this.getCurrentState();
 
         this.agentsVersion++;
-        let action = this.oldAgent.chooseAction(currentState);
-
+        let action = this.oldAgent.chooseLastAgentAction(currentState);
+        debugger;
         // increase reward check
         this.incReward += REWARD_SCALE;
         return action;
       } else {
-        debugger;
         // Use the old agent QTable now
         let currentState = this.getCurrentState();
-        let action = this.oldAgent.chooseAction(currentState);
+        let action = this.oldAgent.chooseLastAgentAction(currentState);
         return action;
       }
     }
