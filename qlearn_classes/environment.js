@@ -40,10 +40,7 @@ class Environment {
     let actions = this.getActions();
 
     // if the rewards is 50 plus on the agent, use the current Qtable to get it to self-play
-    if (
-      this.totalRewards > this.incReward - 1 &&
-      this.totalRewards % REWARD_SCALE === 0
-    ) {
+    if (this.totalRewards > this.incReward - 1) {
       this.oldAgent = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
 
       this.oldAgent.qValues = Array.from(qlearn.qValues);
