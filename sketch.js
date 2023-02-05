@@ -14,6 +14,7 @@ let errors = [];
 let messages = [];
 let consoleHeight = GAMEFRAME_HEIGHT;
 let isPAUSED = false;
+let qGraph;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -48,6 +49,8 @@ function setConnect4() {
   qlearn = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
   logMessage("New Game");
 
+  qGraph = new QLearnGraph();
+
   return game;
 }
 
@@ -57,7 +60,7 @@ function doConnect4Loop() {
   fill(0);
   text("Total reward:" + env.totalRewards, GAMEFRAME_WIDTH, 40);
   drawConsole();
-  drawGraph2d();
+  qGraph.drawQLGraph();
   game.updateWorld();
 }
 
@@ -158,57 +161,6 @@ function drawGraph() {
   }
   fill(0);
   stroke(1);
-}
-
-function drawGraph2d() {
-  let graphLeft = GAMEFRAME_WIDTH + 10;
-  let graphTop = 0;
-  let graphWidth = GAMEFRAME_WIDTH;
-  let graphHeight = GAMEFRAME_HEIGHT;
-  let maxLength = 1000;
-  let sum = 0;
-
-  // background(255);
-  noFill();
-  stroke(0);
-  rect(graphLeft, graphTop, graphWidth, graphHeight);
-
-  // Add new reward to the rewards array
-  rewards.push(random(0, 1));
-
-  // Keep the rewards array to a maximum length
-  if (rewards.length > maxLength) {
-    rewards.shift();
-  }
-
-  // Calculate the average reward
-  sum += rewards[rewards.length - 1];
-  avgRewards.push(sum / rewards.length);
-
-  // Keep the average rewards array to a maximum length
-  if (avgRewards.length > maxLength) {
-    avgRewards.shift();
-  }
-
-  // Plot the average rewards
-  stroke(255, 0, 0);
-  beginShape();
-  for (let i = 0; i < avgRewards.length; i++) {
-    let x = map(i, 0, maxLength, graphLeft, graphLeft + graphWidth);
-    let y = map(avgRewards[i], 0, 1, graphTop + graphHeight, graphTop);
-    vertex(x, y);
-  }
-  endShape();
-  // teext
-
-  fill(0);
-  stroke(0);
-  text(
-    `Average Reward: ${(sum / rewards.length).toFixed(2)}`,
-    GAMEFRAME_WIDTH,
-    20
-  );
-  //text(`Average Error: ${avgError.toFixed(2)}`, GAMEFRAME_WIDTH, 40);
 }
 
 // This Redraws the Canvas when resized
