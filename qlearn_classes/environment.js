@@ -12,7 +12,7 @@ class Environment {
     this.oldAgent = null;
     this.agentsVersion = 0;
     this.incReward = REWARD_SCALE;
-    this.doneRandom = false;
+    this.doRandom = true;
   }
 
   getTerminalStatus() {
@@ -42,14 +42,18 @@ class Environment {
 
     // if the rewards is 50 plus on the agent, use the current Qtable to get it to self-play
 
-    if (!this.doneRandom) {
+    if (this.doRandom) {
       // At the start do random moves until the Reward Threshold
       let randomIndex = Math.floor(Math.random() * actions.length);
+      if (floor(this.totalRewards) === REWARD_SCALE) {
+        this.doRandom = false;
+      }
+
       return actions[randomIndex];
     } else {
+      //debugger;
       // Check if the first threshold is met, if so change set the old Qtable to the old agent
-      if (floor(this.totalRewards) > this.incReward - 1) {
-        this.doneRandom = true;
+      if (floor(this.totalRewards) === this.incReward) {
         this.oldAgent = new QLearnTurnBased(env, ALPHA, GAMMA, EPSILON);
 
         this.oldAgent.qValues = Array.from(qlearn.qValues);
@@ -63,6 +67,7 @@ class Environment {
         this.incReward += REWARD_SCALE;
         return action;
       } else {
+        debugger;
         // Use the old agent QTable now
         let currentState = this.getCurrentState();
         let action = this.oldAgent.chooseAction(currentState);
