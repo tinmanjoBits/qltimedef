@@ -131,5 +131,6 @@ class Environment {
 
     // reduce the explaration of the agent over time when it gains rewards (epislon)
     qlearn.reduceEpsilon(this.totalRewards);
+    debugger;
   }
 }

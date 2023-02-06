@@ -17,6 +17,7 @@ let isPAUSED = false;
 let qGraph;
 let frameCountSlider;
 let opponentRewards = [];
+let qplotter;
 
 let test;
 
@@ -64,6 +65,8 @@ function setConnect4() {
   logMessage("New Game");
 
   qGraph = new QLearnGraph();
+  qplotter = new QValuesPlotter(qlearn.qValues);
+  //qplotter.setupQ();
 
   return game;
 }
@@ -98,6 +101,8 @@ function doConnect4Loop() {
   drawConsole();
 
   qGraph.drawQLGraph();
+
+  visualizeQValues(qlearn.qValues, GAMEFRAME_WIDTH, GAMEFRAME_HEIGHT);
 }
 
 function draw() {
@@ -121,7 +126,7 @@ function keyPressed() {
 function drawConsole() {
   // Draw the console background
   fill(0);
-  rect(0, GAMEFRAME_HEIGHT, width, consoleHeight);
+  rect(0, GAMEFRAME_HEIGHT, GAMEFRAME_WIDTH * 2, consoleHeight);
 
   // Display messages in the console
   fill(255, 0, 0);
@@ -231,4 +236,124 @@ function testQLearning(ql_test) {
   console.log("Rewards: ", rewards);
   console.log("Actions: ", actions);
   console.log("Errors: ", errors);
+}
+
+class QValuesPlotter {
+  constructor(qvalues) {
+    this.maxQValue = -Infinity;
+    this.minQValue = Infinity;
+    this.qValues = qvalues;
+  }
+
+  setupQ(qvalues) {
+    // Find the minimum and maximum q-value for normalization
+    for (let i = 0; i < this.qValues.length; i++) {
+      for (let j = 0; j < this.qValues[0].length; j++) {
+        this.maxQValue = max(this.maxQValue, this.qValues[i][j]);
+        this.minQValue = min(this.minQValue, this.qValues[i][j]);
+      }
+    }
+  }
+
+  plotQValues() {
+    let angleStep = TWO_PI / this.qValues.length;
+    let radiusStep = GAMEFRAME_HEIGHT / 2 / this.qValues[0].length;
+
+    // Loop through the q-values and plot each point
+    for (let i = 0; i < this.qValues.length; i++) {
+      let angle = i * angleStep;
+      for (let j = 0; j < qValues[0].length; j++) {
+        let radius = j * radiusStep;
+        let qValue = this.qValues[i][j];
+        let normalizedQValue =
+          (qValue - this.minQValue) / (this.maxQValue - this.minQValue);
+        let c = lerpColor(color(0, 0, 255), color(255, 0, 0), normalizedQValue);
+        fill(c);
+        let x = radius * cos(angle);
+        let y = radius * sin(angle);
+        ellipse(x + GAMEFRAME_WIDTH * 1.5, y + GAMEFRAME_HEIGHT * 2, 5, 5);
+      }
+    }
+  }
+
+  drawPolarGrid() {
+    let angleStep = TWO_PI / 8;
+    let radiusStep = GAMEFRAME_HEIGHT / 2 / 8;
+
+    // Draw the radial lines
+    for (let i = 0; i < 8; i++) {
+      let angle = i * angleStep;
+      let x = (GAMEFRAME_WIDTH / 2) * cos(angle);
+      let y = (GAMEFRAME_HEIGHT / 2) * sin(angle);
+      line(0, 0, x, y);
+    }
+    fill(255);
+    // Draw the concentric circles
+    for (let i = 0; i < 8; i++) {
+      let radius = i * radiusStep;
+      ellipse(
+        GAMEFRAME_WIDTH * 1.5,
+        GAMEFRAME_HEIGHT * 2,
+        2 * radius,
+        2 * radius
+      );
+    }
+  }
+
+  drawRectQValues() {
+    let qValues = qlearn.qValues; // Assume this is a 2D array containing the qValues
+    let maxValue; // Maximum qValue in the array
+    let minValue; // Minimum qValue in the array
+    let rowCount; // Number of rows in the qValues array
+    let colCount; // Number of columns in the qValues array
+    for (let row = 0; row < rowCount; row++) {
+      for (let col = 0; col < colCount; col++) {
+        let qValue = qValues[row][col];
+        let valueRange = maxValue - minValue;
+        let valuePercent = (qValue - minValue) / valueRange;
+        let c = color(255 * valuePercent, 0, 255 * (1 - valuePercent));
+        let size = gaussian(valuePercent) * 10;
+        fill(c);
+        ellipse(col * size, row * size, size, size);
+      }
+    }
+  }
+
+  gaussian(x) {
+    return (
+      Math.exp((-0.5 * x * x) / (0.1 * 0.1)) / (Math.sqrt(2 * Math.PI) * 0.1)
+    );
+  }
+}
+
+function visualizeQValues(qValues, rows, cols) {
+  rows = 320;
+  cols = 320;
+  let maxQValue = -Infinity;
+  for (let state in qValues) {
+    let stateQValues = qValues[state];
+    for (let action in stateQValues) {
+      maxQValue = Math.max(maxQValue, stateQValues[action]);
+    }
+  }
+
+  let cellWidth = GAMEFRAME_WIDTH / cols;
+  let cellHeight = GAMEFRAME_HEIGHT / rows;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      let state = `${row},${col}`;
+      let stateQValues = qValues[state];
+
+      let x = col * cellWidth;
+      let y = row * cellHeight;
+
+      for (let action in stateQValues) {
+        let qValue = stateQValues[action];
+        let colorValue = Math.floor(map(qValue, 0, maxQValue, 0, 255));
+        fill(random(255));
+        rect(x, y, cellWidth, cellHeight);
+      }
+    }
+  }
 }
