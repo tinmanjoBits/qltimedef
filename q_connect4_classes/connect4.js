@@ -23,6 +23,12 @@ class Connect4 {
     this.gameDraws = 0;
 
     this.opponentsRewards = 0;
+
+    this.rewardType = {
+      win: 0,
+      lose: -1,
+      draw: -0.5
+    };
   }
 
   resetBoard() {
@@ -125,7 +131,7 @@ class Connect4 {
 
     // Check for a draw
     if (this.getValidMoves().length === 0) {
-      this.reward = 0.5;
+      //  this.reward =0;
       return 0.5;
     }
 
@@ -213,7 +219,7 @@ class Connect4 {
       if (game.turn === 1) {
         player = "Agent";
 
-        this.currentAgentReward = 2;
+        this.currentAgentReward = 1;
         this.gamesAIWon++;
 
         // random or old agent reward negative for losing
@@ -224,7 +230,7 @@ class Connect4 {
 
         this.gamesRandomWon++;
         // random or old agent reward postive for winning
-        this.opponentsRewards += 2;
+        this.opponentsRewards += 1;
       }
       // debugger;
       logMessage("Player:" + player + " has won!");

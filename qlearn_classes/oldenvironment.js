@@ -9,6 +9,10 @@ class Environment {
     this.currentEpisode = 0;
     this.endOfGame = false;
     this.totalRewards = 0;
+    this.oldAgent = null;
+    this.agentsVersion = 0;
+    this.incReward = REWARD_SCALE;
+    this.doRandom = true;
   }
 
   getTerminalStatus() {
@@ -38,10 +42,37 @@ class Environment {
 
     // if the rewards is 50 plus on the agent, use the current Qtable to get it to self-play
 
-    // At the start do random moves until the Reward Threshold
-    let randomIndex = Math.floor(Math.random() * actions.length);
+    if (this.doRandom) {
+      // At the start do random moves until the Reward Threshold
+      let randomIndex = Math.floor(Math.random() * actions.length);
+      if (floor(this.totalRewards) === REWARD_SCALE) {
+        this.doRandom = false;
+      }
 
-    return actions[randomIndex];
+      return actions[randomIndex];
+    } else {
+      //debugger;
+      // Check if the first threshold is met, if so change set the old Qtable to the old agent
+      if (floor(this.totalRewards) > this.incReward - 1) {
+        this.oldAgent = new QLearnTurnBased(this, ALPHA, GAMMA, EPSILON);
+
+        this.oldAgent.qValues = Array.from(qlearn.qValues);
+
+        let currentState = this.getCurrentState();
+
+        this.agentsVersion++;
+        let action = this.oldAgent.chooseLastAgentAction(currentState);
+        debugger;
+        // increase reward check
+        this.incReward += REWARD_SCALE;
+        return action;
+      } else {
+        // Use the old agent QTable now
+        let currentState = this.getCurrentState();
+        let action = this.oldAgent.chooseLastAgentAction(currentState);
+        return action;
+      }
+    }
   }
 
   trainSteps() {
@@ -128,8 +159,5 @@ class Environment {
 
     opponentRewards.push(game.opponentsRewards);
     errors.push(1);
-
-    // reduce the explaration of the agent over time when it gains rewards (epislon)
-    qlearn.reduceEpsilon(this.game.gamesAIWon);
   }
 }

@@ -9,6 +9,15 @@ class QLearnTurnBased {
     this.epsilon = epsilon;
   }
 
+  reduceEpsilon(gamesWon) {
+    if (gamesWon % 100 === 0) {
+      this.epsilon = this.epsilon * 0.1;
+    }
+    if (this.epsilon < 0.01) {
+      this.epsilon = 0.01;
+    }
+  }
+
   chooseAction(state) {
     // Choose the action to take based on the current state
     // Implementation depends on the type of exploration-exploitation trade-off desired
