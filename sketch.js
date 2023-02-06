@@ -73,6 +73,7 @@ function setConnect4() {
 
 function doConnect4Loop() {
   game.renderWorld();
+  textSize(14);
   stroke(0);
   fill(0);
   text("Total reward:" + env.totalRewards, GAMEFRAME_WIDTH * 2 + 30, 40);
