@@ -19,7 +19,7 @@ let frameCountSlider;
 let opponentRewards = [];
 let qplotter;
 
-let gamec;
+let gc4;
 
 let test;
 
@@ -27,7 +27,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   // rows = height / gridSize;
   // cols = width / gridSize;
-  gamec = new GameC();
+  gc4 = new GameC4();
   // // setupAvoidTheFox();
   // game = setConnect4();
 
@@ -111,7 +111,7 @@ function doConnect4Loop() {
 function draw() {
   background(255);
   // doConnect4Loop();
-
+  gc4.renderGame();
   // if (!isPAUSED) {
   //   // slow things down a little
   //   if ((frameCount % frameCountSlider.value()) * 10 === 0) {
