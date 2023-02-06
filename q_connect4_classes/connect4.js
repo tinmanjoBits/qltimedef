@@ -11,6 +11,14 @@ class Connect4 {
       }
     }
 
+    this.qActionType = {};
+    for (let i = 0; i < 6; i++) {
+      this.qActionType[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.qActionType[i][j] = 0;
+      }
+    }
+
     this.validMoves = [];
     this.turn = 1; // set Agent to go first,  0 is the random bot
     this.currentAgentReward = 0;
@@ -37,6 +45,15 @@ class Connect4 {
       this.board[i] = [];
       for (let j = 0; j < 7; j++) {
         this.board[i][j] = 0;
+      }
+    }
+
+    // reset the q action type table (visual only)
+    this.qActionType = {};
+    for (let i = 0; i < 6; i++) {
+      this.qActionType[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.qActionType[i][j] = 0;
       }
     }
     this.validMoves = [];
@@ -143,34 +160,40 @@ class Connect4 {
     background(255);
     for (let i = 0; i < 6; i++) {
       for (let j = 0; j < 7; j++) {
-        if (game.board[i][j] === 1) {
+        let x = j * floor(this.gameWidth / 7);
+        let y = i * floor(this.gameHeight / 6);
+        let w = floor(this.gameWidth / 7);
+        let h = floor(this.gameHeight / 6);
+
+        if (game.board[i][j] === -1) {
           fill(0, 255, 0);
-        } else if (game.board[i][j] === -1) {
+        } else if (game.board[i][j] === 1) {
           fill(0, 0, 224);
         } else {
           fill(255);
         }
-        rect(
-          j * floor(this.gameWidth / 7),
-          i * floor(this.gameHeight / 6),
-          floor(this.gameWidth / 7),
-          floor(this.gameHeight / 6)
-        );
-        if (game.board[i][j] === 1) {
-          fill(0);
-          textSize(18);
-          if (qlearn && qlearn.randomAction) {
-            text(
-              "R",
-              j * floor(this.gameWidth / 7) + 12,
-              i * floor(this.gameHeight / 6) + 24
-            );
-          } else {
-            text(
-              "Q",
-              j * floor(this.gameWidth / 7) + 12,
-              i * floor(this.gameHeight / 6) + 24
-            );
+        rect(x, y, w, h);
+      }
+    }
+
+    this.drawQStatus();
+  }
+
+  drawQStatus() {
+    for (let i = 0; i < 6; i++) {
+      for (let j = 0; j < 7; j++) {
+        let x = j * floor(this.gameWidth / 7);
+        let y = i * floor(this.gameHeight / 6);
+
+        if (game.board[i][j] === -1) {
+          if (this.qActionType[i][j] === "R") {
+            fill(0);
+            textSize(18);
+            text("R", x + 12, y + 24);
+          } else if (this.qActionType[i][j] === "Q") {
+            fill(0);
+            textSize(18);
+            text("Q", x + 12, y + 24);
           }
         }
       }
@@ -182,10 +205,15 @@ class Connect4 {
     return validMoves[floor(random() * validMoves.length)];
   }
 
-  takeAction(action) {
+  takeAction(action, _actionType) {
     for (let i = 5; i >= 0; i--) {
-      // debugger;
-      if (this.board[i][action] === 0) {
+      if (this.board[i][action] === 0 && this.turn === -1) {
+        if (_actionType.actType === "R") {
+          this.qActionType[i][action] = "R";
+        } else if (_actionType.actType === "Q") {
+          this.qActionType[i][action] = "Q";
+        }
+
         this.board[i][action] = this.turn;
         this.turn = -this.turn;
 

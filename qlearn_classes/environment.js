@@ -9,6 +9,11 @@ class Environment {
     this.currentEpisode = 0;
     this.endOfGame = false;
     this.totalRewards = 0;
+
+    this.actionType = {
+      actType: "None",
+      action: "None"
+    };
   }
 
   getTerminalStatus() {
@@ -98,7 +103,15 @@ class Environment {
     let currentState = this.getCurrentState();
 
     let action = qlearn.chooseAction(currentState);
-    this.game.takeAction(action);
+    if (qlearn.randomAction) {
+      this.actionType.actType = "R";
+      this.actionType.action = action;
+    } else {
+      this.actionType.actType = "Q";
+      this.actionType.action = action;
+    }
+
+    this.game.takeAction(action, this.actionType);
     let nextState = this.getCurrentState();
     let rewardThisTurn = this.game.getReward();
 

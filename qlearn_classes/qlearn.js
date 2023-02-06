@@ -29,9 +29,11 @@ class QLearnTurnBased {
     if (Math.random() < this.epsilon) {
       // Explore: select a random action
       this.randomAction = true;
+
       return this.env.getRandomAction();
     } else {
       this.randomAction = false;
+
       // Exploit: select the action with the highest Q-value
       return this.getMaxQAction(state);
     }
