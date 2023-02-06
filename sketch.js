@@ -19,19 +19,21 @@ let frameCountSlider;
 let opponentRewards = [];
 let qplotter;
 
+let gamec;
+
 let test;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  rows = height / gridSize;
-  cols = width / gridSize;
+  // rows = height / gridSize;
+  // cols = width / gridSize;
+  gamec = new GameC();
+  // // setupAvoidTheFox();
+  // game = setConnect4();
 
-  // setupAvoidTheFox();
-  game = setConnect4();
-
-  p = createP("hello");
-  frameCountSlider = createSlider(1, 1000, 1);
-  frameCountSlider.position(10, GAMEFRAME_HEIGHT * 2 + 30);
+  // p = createP("hello");
+  // frameCountSlider = createSlider(1, 1000, 1);
+  // frameCountSlider.position(10, GAMEFRAME_HEIGHT * 2 + 30);
 
   // let testGame = new TestGame();
   // env = new Environment(testGame);
@@ -108,16 +110,16 @@ function doConnect4Loop() {
 
 function draw() {
   background(255);
-  doConnect4Loop();
+  // doConnect4Loop();
 
-  if (!isPAUSED) {
-    // slow things down a little
-    if ((frameCount % frameCountSlider.value()) * 10 === 0) {
-      game.updateWorld();
-      game.playerMouseControls();
-      qGraph.clearOldData();
-    }
-  }
+  // if (!isPAUSED) {
+  //   // slow things down a little
+  //   if ((frameCount % frameCountSlider.value()) * 10 === 0) {
+  //     game.updateWorld();
+  //     game.playerMouseControls();
+  //     qGraph.clearOldData();
+  //   }
+  // }
 }
 
 function keyPressed() {
