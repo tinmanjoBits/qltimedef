@@ -156,6 +156,23 @@ class Connect4 {
           floor(this.gameWidth / 7),
           floor(this.gameHeight / 6)
         );
+        if (game.board[i][j] === 1) {
+          fill(0);
+          textSize(18);
+          if (qlearn && qlearn.randomAction) {
+            text(
+              "R",
+              j * floor(this.gameWidth / 7) + 12,
+              i * floor(this.gameHeight / 6) + 24
+            );
+          } else {
+            text(
+              "Q",
+              j * floor(this.gameWidth / 7) + 12,
+              i * floor(this.gameHeight / 6) + 24
+            );
+          }
+        }
       }
     }
   }

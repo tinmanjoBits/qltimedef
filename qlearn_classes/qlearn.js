@@ -8,6 +8,7 @@ class QLearnTurnBased {
     this.gamma = gamma;
     this.epsilon = epsilon;
     this.epsilonScale = REWARD_SCALE;
+    this.randomAction = false;
   }
 
   reduceEpsilon(maxRewards) {
@@ -27,8 +28,10 @@ class QLearnTurnBased {
     // e.g. Epsilon-greedy, Softmax, etc.
     if (Math.random() < this.epsilon) {
       // Explore: select a random action
+      this.randomAction = true;
       return this.env.getRandomAction();
     } else {
+      this.randomAction = false;
       // Exploit: select the action with the highest Q-value
       return this.getMaxQAction(state);
     }
