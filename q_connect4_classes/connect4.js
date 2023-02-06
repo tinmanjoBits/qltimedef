@@ -12,7 +12,7 @@ class Connect4 {
     }
 
     this.validMoves = [];
-    this.turn = 1;
+    this.turn = 1; // set Agent to go first,  0 is the random bot
     this.currentAgentReward = 0;
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
@@ -175,19 +175,22 @@ class Connect4 {
         break;
       }
     }
+
     logMessage("Player: AI Agent, column move:" + action);
   }
 
   playerMouseControls() {
     // debugger;
-    if (this.winner !== 1 || this.winner === 0.5) {
+    if (this.winner !== 1 || this.winner !== 0.5) {
       // if random player turn
       if (this.turn === 1) {
         const move = this.actRandomly();
         this.makeMove(move);
-      } else {
+        this.winner = this.getResult(this.turn);
+      } else if (this.turn === -1) {
         // ai agent plays
         env.trainOneStep();
+        this.winner = this.getResult(this.turn);
       }
     } else {
       // this.reward = this.winner;
