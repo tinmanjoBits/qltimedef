@@ -14,6 +14,7 @@ class QLearnTurnBased {
     if (maxRewards > 0 && maxRewards % this.epsilonScale === 0) {
       this.epsilon = this.epsilon * 0.9;
       this.epsilonScale += REWARD_SCALE;
+      debugger;
     }
     if (this.epsilon < 0.01) {
       this.epsilon = 0.01;
