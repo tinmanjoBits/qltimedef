@@ -237,9 +237,6 @@ class Connect4 {
     }
 
     if (this.winner === 1 || this.winner === 0.5) {
-      fill(0);
-      text("New Game:", width / 2, height / 2);
-
       this.winner = 0;
       game.resetBoard();
     }

@@ -102,7 +102,7 @@ function doConnect4Loop() {
 
   qGraph.drawQLGraph();
 
-  visualizeQValues(qlearn.qValues, GAMEFRAME_WIDTH, GAMEFRAME_HEIGHT);
+  // visualizeQValues(qlearn.qValues, GAMEFRAME_WIDTH, GAMEFRAME_HEIGHT);
 }
 
 function draw() {
@@ -327,11 +327,13 @@ class QValuesPlotter {
 }
 
 function visualizeQValues(qValues, rows, cols) {
-  rows = 320;
-  cols = 320;
+  rows = 6;
+  cols = 7;
+
+  let qv = Array.from(qValues);
   let maxQValue = -Infinity;
-  for (let state in qValues) {
-    let stateQValues = qValues[state];
+  for (let state in qv) {
+    let stateQValues = qv[state];
     for (let action in stateQValues) {
       maxQValue = Math.max(maxQValue, stateQValues[action]);
     }
@@ -343,7 +345,7 @@ function visualizeQValues(qValues, rows, cols) {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       let state = `${row},${col}`;
-      let stateQValues = qValues[state];
+      let stateQValues = qv[state];
 
       let x = col * cellWidth;
       let y = row * cellHeight;
