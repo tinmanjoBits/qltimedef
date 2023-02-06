@@ -130,6 +130,6 @@ class Environment {
     errors.push(1);
 
     // reduce the explaration of the agent over time when it gains rewards (epislon)
-    qlearn.reduceEpsilon(this.game.gamesAIWon);
+    qlearn.reduceEpsilon(this.totalRewards);
   }
 }

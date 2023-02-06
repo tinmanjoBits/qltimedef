@@ -86,8 +86,15 @@ function doConnect4Loop() {
   );
 
   text("Games drawn:" + gamesDrawn, GAMEFRAME_WIDTH * 2 + 30, 100);
-  text("QTable size:" + qlearn.qValues.length, GAMEFRAME_WIDTH * 2 + 30, 120);
-
+  text("Alpha, Gamma: " + ALPHA + ", " + GAMMA, GAMEFRAME_WIDTH * 2 + 30, 120);
+  text(
+    "Episilon variance:" +
+      qlearn.epsilon.toFixed(4) +
+      " Scale:" +
+      qlearn.epsilonScale,
+    GAMEFRAME_WIDTH * 2 + 30,
+    140
+  );
   drawConsole();
 
   qGraph.drawQLGraph();

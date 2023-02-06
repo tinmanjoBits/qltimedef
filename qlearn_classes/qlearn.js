@@ -7,11 +7,13 @@ class QLearnTurnBased {
     this.alpha = alpha;
     this.gamma = gamma;
     this.epsilon = epsilon;
+    this.epsilonScale = REWARD_SCALE;
   }
 
-  reduceEpsilon(gamesWon) {
-    if (gamesWon % 100 === 0) {
-      this.epsilon = this.epsilon * 0.1;
+  reduceEpsilon(maxRewards) {
+    if (maxRewards > 0 && maxRewards % this.epsilonScale === 0) {
+      this.epsilon = this.epsilon * 0.9;
+      this.epsilonScale += REWARD_SCALE;
     }
     if (this.epsilon < 0.01) {
       this.epsilon = 0.01;
