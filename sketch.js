@@ -26,7 +26,8 @@ function setup() {
   // rows = height / gridSize;
   // cols = width / gridSize;
 
-  frameCountSlider = createSlider(1, 1000, 1);
+  frameCountSlider = createSlider(0.0001, 1, 0, 0);
+  frameCountSlider.position = 10;
   qlearn = new QLearnTurnBased(ALPHA, GAMMA, EPSILON);
   gc4 = new GameC4();
   env4 = new GameEnv(gc4, qlearn);
@@ -45,24 +46,24 @@ function setup() {
 function draw() {
   background(255);
 
-  gc4.renderGame();
-  env4.renderGameStatsWindow();
-
-  if (gameOver === WIN || gameOver === DRAWN) {
-    if ((frameCount % 60) * 10 === 0) {
+  // update stuff, controlled via slider for speed.
+  for (let k = 0; k < frameCountSlider.value(); k += 0.1) {
+    if (gameOver === WIN || gameOver === DRAWN) {
       gc4.resetGame();
       gameOver = 0;
     }
-  }
 
-  if (!isPAUSED) {
-    // slow things down a little
-    if ((frameCount % frameCountSlider.value()) * 5 === 0) {
+    if (!isPAUSED) {
+      // slow things down a little
+
       gameOver = env4.update();
       graph1.clearOldData();
     }
   }
 
+  // Drawing section
+  gc4.renderGame();
+  env4.renderGameStatsWindow();
   graph1.drawQLGraph();
   // graph1.clearOldData();
 }
