@@ -115,19 +115,6 @@ class Environment {
     let nextState = this.getCurrentState();
     let rewardThisTurn = this.game.getReward();
 
-    // set rewards
-    // if (this.game.winner === 1 && this.game.turn === -1) {
-    //   // agent wins
-    //   debugger;
-    //   rewardThisTurn = 1;
-    // } else if (this.game.winner === 0.5) {
-    //   // draw
-    //   rewardThisTurn = 0.5;
-    // } else if (this.game.winner === 1 && this.game.turn === 1) {
-    //   // agent lost
-    //   rewardThisTurn = -1;
-    // }
-    // debugger;
     this.totalRewards += rewardThisTurn;
     logMessage(
       "reward this game:" +

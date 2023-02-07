@@ -1,12 +1,12 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 class QLearnGraph {
-  constructor() {
-    this.graphLeft = GAMEFRAME_WIDTH + 10;
-    this.graphTop = 0;
-    this.graphWidth = GAMEFRAME_WIDTH;
-    this.graphHeight = GAMEFRAME_HEIGHT;
-    this.maxLength = 1000;
+  constructor(left, top, w, h, maxLen) {
+    this.graphLeft = left;
+    this.graphTop = top;
+    this.graphWidth = w;
+    this.graphHeight = h;
+    this.maxLength = maxLen;
     this.sum = 0;
   }
 

@@ -1,14 +1,18 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 class QLearnTurnBased {
-  constructor(env, alpha, gamma, epsilon) {
-    this.env = env;
+  constructor(alpha, gamma, epsilon) {
+    this.env = null;
     this.qValues = {};
     this.alpha = alpha;
     this.gamma = gamma;
     this.epsilon = epsilon;
     this.epsilonScale = REWARD_SCALE;
     this.randomAction = false;
+  }
+
+  setEnv(env) {
+    this.env = env;
   }
 
   reduceEpsilon(maxRewards) {
@@ -22,21 +26,24 @@ class QLearnTurnBased {
     }
   }
 
-  chooseAction(state) {
+  chooseAction(state, actionSpace) {
     // Choose the action to take based on the current state
     // Implementation depends on the type of exploration-exploitation trade-off desired
     // e.g. Epsilon-greedy, Softmax, etc.
     if (Math.random() < this.epsilon) {
       // Explore: select a random action
-      this.randomAction = true;
 
-      return this.env.getRandomAction();
+      return this.getRandomAction(actionSpace);
     } else {
-      this.randomAction = false;
-
       // Exploit: select the action with the highest Q-value
       return this.getMaxQAction(state);
     }
+  }
+
+  getRandomAction(actions) {
+    let randomIndex = Math.floor(Math.random() * actions.length);
+
+    return actions[randomIndex];
   }
 
   chooseLastAgentAction(state) {
