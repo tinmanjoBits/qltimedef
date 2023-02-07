@@ -164,6 +164,9 @@ class GameEnv {
       status: PLAYING,
       currentReward: 0
     };
+
+    this.gameStatsWindowLeft = GAMEFRAME_WIDTH;
+    this.gameStatsWindowTop = 0;
   }
 
   controlMouse() {
@@ -190,6 +193,22 @@ class GameEnv {
     }
   }
 
+  update() {
+    let stat = this.step(turn);
+
+    // rotate players
+    if (turn === PLAYER1) {
+      turn = PLAYER2;
+    } else if (turn === PLAYER2) {
+      turn = PLAYER1;
+    }
+    //  debugger;
+
+    if (stat.status === WIN || stat.status === DRAWN) {
+      return stat.status;
+    }
+  }
+
   step(player) {
     // Perform random action, this also gets valid moves
     let move = this.game.actRandomly();
@@ -202,9 +221,25 @@ class GameEnv {
     let envState = {
       turn: player,
       status: gameStatus,
-      boardStates: this.game
+      boardStates: this.game.board
     };
 
     return envState;
+  }
+
+  renderGameStatsWindow() {
+    let left = this.gameStatsWindowLeft;
+    let top = this.gameStatsWindowTop;
+    let w = GAMEFRAME_WIDTH;
+    let h = GAMEFRAME_HEIGHT;
+    fill(255);
+    stroke(0);
+    rect(left, top, w, h);
+
+    fill(0);
+    textSize(12);
+    text("Games Played:", left + 10, top + 12);
+    text("Player 1 Wins:", left + 10, top + 24);
+    text("Player 2 Wins:", left + 10, top + 36);
   }
 }

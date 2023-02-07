@@ -24,6 +24,8 @@ let env4;
 
 let test;
 let turn;
+let KEY_PRESSED = false;
+let gameOver = 0;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   // rows = height / gridSize;
@@ -115,7 +117,16 @@ function doConnect4Loop() {
 function draw() {
   background(255);
   // doConnect4Loop();
+
   gc4.renderGame();
+  env4.renderGameStatsWindow();
+
+  if (gameOver === WIN || gameOver === DRAWN) {
+    if ((frameCount % 60) * 10 === 0) {
+      gc4.resetGame();
+      gameOver = 0;
+    }
+  }
 
   // if (!isPAUSED) {
   //   // slow things down a little
@@ -130,21 +141,7 @@ function draw() {
 function keyPressed() {
   //game.playerKeyControls();
 
-  let stat = env4.step(turn);
-
-  
-  // rotate players
-  if (turn === PLAYER1) {
-    turn = PLAYER2;
-  } else if (turn === PLAYER2) {
-    turn = PLAYER1;
-  }
-  //  debugger;
-  if (stat.status === WIN || stat.status === DRAWN) {
-    debugger;
-    setTimeOut()env4.game.resetGame();
-  }
-
+  gameOver = env4.update();
 }
 
 function drawConsole() {
