@@ -20,14 +20,18 @@ let opponentRewards = [];
 let qplotter;
 
 let gc4;
+let env4;
 
 let test;
-
+let turn;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   // rows = height / gridSize;
   // cols = width / gridSize;
   gc4 = new GameC4();
+  env4 = new GameEnv(gc4);
+
+  turn = PLAYER1;
   // // setupAvoidTheFox();
   // game = setConnect4();
 
@@ -112,6 +116,7 @@ function draw() {
   background(255);
   // doConnect4Loop();
   gc4.renderGame();
+
   // if (!isPAUSED) {
   //   // slow things down a little
   //   if ((frameCount % frameCountSlider.value()) * 10 === 0) {
@@ -123,7 +128,23 @@ function draw() {
 }
 
 function keyPressed() {
-  game.playerKeyControls();
+  //game.playerKeyControls();
+
+  let stat = env4.step(turn);
+
+  
+  // rotate players
+  if (turn === PLAYER1) {
+    turn = PLAYER2;
+  } else if (turn === PLAYER2) {
+    turn = PLAYER1;
+  }
+  //  debugger;
+  if (stat.status === WIN || stat.status === DRAWN) {
+    debugger;
+    setTimeOut()env4.game.resetGame();
+  }
+
 }
 
 function drawConsole() {

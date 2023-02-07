@@ -5,8 +5,8 @@ const PLAYER2 = 2;
 const BLANK = 0;
 const WIN = 1;
 const LOSE = -1;
-const DRAWN = 0;
-const PLAYING = 2;
+const DRAWN = 0.5;
+const PLAYING = 0;
 
 class GameC4 {
   constructor(turn) {
@@ -21,6 +21,7 @@ class GameC4 {
     // Check for a win
     for (let i = 0; i < 6; i++) {
       for (let j = 0; j < 7; j++) {
+        // check for wining moves
         if (this.board[i][j] === player) {
           if (
             j <= 3 &&
@@ -63,7 +64,7 @@ class GameC4 {
       return DRAWN;
     }
 
-    return LOSE;
+    return PLAYING;
   }
 
   getValidMoves() {
@@ -133,13 +134,17 @@ class GameC4 {
 
   takeAction(action, value) {
     for (let i = 5; i >= 0; i--) {
-      // debugger;
       if (this.board[i][action] === 0) {
-        this.board[i][action] = this.turn;
+        this.board[i][action] = value;
 
         break;
       }
     }
+  }
+
+  // Return actions that we can take
+  getActionSpace() {
+    return [0, 1, 2, 3, 4, 5, 6];
   }
 }
 
@@ -169,47 +174,37 @@ class GameEnv {
     this.step(PLAYER2);
   }
 
+  updatePlayerScores(player, gameState) {
+    if (player === PLAYER1) {
+      if (gameState === WIN) {
+        this.globalGameStats.gamesP1Won++;
+      } else if (gameState === LOSE) {
+        this.globalGameStats.gamesP1Lost++;
+      }
+    } else if (player === PLAYER2) {
+      if (gameState === WIN) {
+        this.globalGameStats.gamesP2Won++;
+      } else if (gameState === LOSE) {
+        this.globalGameStats.gamesP2Lost++;
+      }
+    }
+  }
+
   step(player) {
-    // get current state
-    let gameState = this.getGameStatus(player);
+    // Perform random action, this also gets valid moves
+    let move = this.game.actRandomly();
+    this.game.takeAction(move, player);
 
-    let reward = 0;
-    // get reward
-    if (gameState === WIN) {
-      reward = 1;
-    }
-    if (gameState === LOSE) {
-      reward = -1;
-    }
-    if (gameState === DRAWN) {
-      reward = 0;
-    }
+    // Get the status of the game based on last move
+    let gameStatus = this.game.getGameStatus(player);
 
-    let localGameStats = {
-      states: this.board,
-      currentPlayer: player,
-      status: gameState,
-      currentReward: 0
+    // WIN=1, DRAW=0.5
+    let envState = {
+      turn: player,
+      status: gameStatus,
+      boardStates: this.game
     };
 
-    if (gameState === WIN || gameState === LOSE || gameState === DRAWN) {
-      return localGameStats;
-    }
-
-    // Perform moves
-
-    let validMove = this.getValidMoves();
-
-    if (player === PLAYER1) {
-      // AI Agent
-      let move = game.actRandomly();
-      game.takeAction(move, PLAYER2);
-    } else if (player === PLAYER2) {
-      // Random player or Agent
-      let move = game.actRandomly();
-      game.takeAction(move, PLAYER2);
-    }
-
-    return this.localGameStats;
+    return envState;
   }
 }
