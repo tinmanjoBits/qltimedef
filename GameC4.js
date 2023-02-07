@@ -262,23 +262,26 @@ class GameEnv {
   step(player) {
     this.currentPlayer = player;
     // Perform random action, this also gets valid moves
+    let gameStatus = 0;
 
     if (player === PLAYER2) {
       let move = this.game.actRandomly();
       this.game.takeAction(move, player);
       // Get the status of the game based on last move
-      let gameStatus = this.game.getGameStatus(player);
 
-      this.updatePlayerRewards(player, gameStatus);
-    } else {
-      // Get the status of the game based on last move
-      let gameStatus = this.game.getGameStatus(player);
+      gameStatus = this.game.getGameStatus(player);
       this.updatePlayerScores(player, gameStatus);
+      this.updatePlayerRewards(player, gameStatus);
+    } else if (player === PLAYER1) {
+      // Get the status of the game based on last move
+      gameStatus = this.game.getGameStatus(player);
+      this.updatePlayerScores(player, gameStatus);
+      this.updatePlayerRewards(player, gameStatus);
       this.doAiStep();
     }
 
-    let gameStatus = this.game.getGameStatus(player);
-    this.updatePlayerScores(player, gameStatus);
+    // gameStatus = this.game.getGameStatus(player);
+    //this.updatePlayerScores(player, gameStatus);
 
     // WIN=1, DRAW=0.5
     let envState = {
