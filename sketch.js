@@ -26,8 +26,8 @@ function setup() {
   // rows = height / gridSize;
   // cols = width / gridSize;
 
-  frameCountSlider = createSlider(0.0001, 1, 0, 0);
-  frameCountSlider.position = 10;
+  frameCountSlider = createSlider(1, 10, 0);
+
   qlearn = new QLearnTurnBased(ALPHA, GAMMA, EPSILON);
   gc4 = new GameC4();
   env4 = new GameEnv(gc4, qlearn);
@@ -47,25 +47,67 @@ function draw() {
   background(255);
 
   // update stuff, controlled via slider for speed.
-  for (let k = 0; k < frameCountSlider.value(); k += 0.1) {
-    if (gameOver === WIN || gameOver === DRAWN) {
-      gc4.resetGame();
-      gameOver = 0;
-    }
+  // for (let k = 0; k <= frameCountSlider.value(); k++) {
+  //   if (!isPAUSED) {
+  //     // slow things down a little
+  //     if (gameOver === WIN || gameOver === DRAWN) {
+  //       gc4.resetGame();
+  //       gameOver = 0;
+  //     }
 
-    if (!isPAUSED) {
-      // slow things down a little
+  //     gameOver = env4.update();
+  //     graph1.clearOldData();
+  //   }
+  // }
 
-      gameOver = env4.update();
-      graph1.clearOldData();
-    }
-  }
-
-  // Drawing section
-  gc4.renderGame();
-  env4.renderGameStatsWindow();
-  graph1.drawQLGraph();
+  // // Drawing section
+  // gc4.renderGame();
+  // env4.renderGameStatsWindow();
+  // graph1.drawQLGraph();
   // graph1.clearOldData();
+}
+
+function simulationLoop() {
+  if (!trainingComplete) {
+    // get current state of the game board
+    currentState = getCurrentState();
+
+    // check if the game is over
+    if (gameOver) {
+      // calculate reward based on the outcome of the game
+      reward = calculateReward();
+
+      // update Q-table with the reward for the current state and action
+      updateQTable(currentState, currentAction, reward);
+
+      // render the final state of the game
+      renderGame();
+
+      // reset the game
+      resetGame();
+
+      // switch players
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+
+      // continue to next iteration of the loop
+      return;
+    }
+
+    // choose an action for the current player based on the current state
+    currentAction = chooseAction(currentState, currentPlayer);
+
+    // take the action choseby the player and update the game board
+    updateGame(currentAction, currentPlayer);
+
+    // render the updated game board
+    renderGame();
+
+    // switch players
+    currentPlayer = currentPlayer == player1 ? player2 : player1;
+
+    // continue training until the desired number of games have been played
+    trainingComplete = checkTrainingComplete();
+  }
 }
 
 function keyPressed() {
