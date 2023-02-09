@@ -36,7 +36,7 @@ class QLearnTurnBased {
       return this.getRandomAction(actionSpace);
     } else {
       // Exploit: select the action with the highest Q-value
-      return this.getMaxQAction(state);
+      return this.getMaxQAction(state, actionSpace);
     }
   }
 
@@ -51,8 +51,8 @@ class QLearnTurnBased {
     return this.getMaxQAction(state);
   }
 
-  getMaxQAction(state) {
-    let actions = this.env.getActions(state);
+  getMaxQAction(state, actionSpace) {
+    let actions = actionSpace;
     let qValues = actions.map((action) => this.getQValue(state, action));
     let maxQValue = Math.max(...qValues);
     let maxQIndex = qValues.indexOf(maxQValue);

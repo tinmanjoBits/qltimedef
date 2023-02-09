@@ -30,10 +30,8 @@ function setup() {
 
   qlearn = new QLearnTurnBased(ALPHA, GAMMA, EPSILON);
   gc4 = new GameC4();
-  env4 = new GameEnv(gc4, qlearn);
-  qlearn.setEnv(env4);
+  env4 = new GameEnvironment(gc4, qlearn);
 
-  turn = PLAYER1;
   graph1 = new QLearnGraph(
     GAMEFRAME_WIDTH,
     GAMEFRAME_HEIGHT,
@@ -46,73 +44,13 @@ function setup() {
 function draw() {
   background(255);
 
-  // update stuff, controlled via slider for speed.
-  // for (let k = 0; k <= frameCountSlider.value(); k++) {
-  //   if (!isPAUSED) {
-  //     // slow things down a little
-  //     if (gameOver === WIN || gameOver === DRAWN) {
-  //       gc4.resetGame();
-  //       gameOver = 0;
-  //     }
-
-  //     gameOver = env4.update();
-  //     graph1.clearOldData();
-  //   }
-  // }
-
-  // // Drawing section
-  // gc4.renderGame();
-  // env4.renderGameStatsWindow();
-  // graph1.drawQLGraph();
-  // graph1.clearOldData();
+  gc4.renderGame();
 }
 
-function simulationLoop() {
-  if (!trainingComplete) {
-    // get current state of the game board
-    currentState = getCurrentState();
-
-    // check if the game is over
-    if (gameOver) {
-      // calculate reward based on the outcome of the game
-      reward = calculateReward();
-
-      // update Q-table with the reward for the current state and action
-      updateQTable(currentState, currentAction, reward);
-
-      // render the final state of the game
-      renderGame();
-
-      // reset the game
-      resetGame();
-
-      // switch players
-      currentPlayer = currentPlayer === player1 ? player2 : player1;
-
-      // continue to next iteration of the loop
-      return;
-    }
-
-    // choose an action for the current player based on the current state
-    currentAction = chooseAction(currentState, currentPlayer);
-
-    // take the action choseby the player and update the game board
-    updateGame(currentAction, currentPlayer);
-
-    // render the updated game board
-    renderGame();
-
-    // switch players
-    currentPlayer = currentPlayer == player1 ? player2 : player1;
-
-    // continue training until the desired number of games have been played
-    trainingComplete = checkTrainingComplete();
-  }
-}
+function simulationLoop() {}
 
 function keyPressed() {
-  //game.playerKeyControls();
-  //gameOver = env4.update();
+  env4.simulationStep();
 }
 
 function drawConsole() {
@@ -136,50 +74,6 @@ function logMessage(message) {
   if (messages.length > GAMEFRAME_HEIGHT / 20) {
     messages.shift();
   }
-}
-
-function drawGraph() {
-  // Draw the graphs
-  let avgReward = 0;
-  let avgError = 0;
-  for (let i = 0; i < rewards.length; i++) {
-    avgReward += rewards[i];
-    avgError += errors[i];
-  }
-  avgReward /= rewards.length;
-  avgError /= errors.length;
-
-  fill(255);
-  text(`Average Reward: ${avgReward.toFixed(2)}`, 10, 20);
-  text(`Average Error: ${avgError.toFixed(2)}`, 10, 40);
-
-  // Draw the line graph of rewards
-  let x = 0;
-  let y = GAMEFRAME_HEIGHT - avgReward * 50;
-  stroke(255, 0, 0);
-  strokeWeight(2);
-  for (let i = 0; i < rewards.length; i++) {
-    let nextX = x + GAMEFRAME_WIDTH / rewards.length;
-    let nextY = GAMEFRAME_HEIGHT - rewards[i] * 50;
-    line(x + GAMEFRAME_WIDTH, y + GAMEFRAME_HEIGHT, nextX, nextY);
-    x = nextX;
-    y = nextY;
-  }
-
-  // Draw the line graph of errors
-  x = 0;
-  y = GAMEFRAME_HEIGHT - avgError * 50;
-  stroke(0, 255, 0);
-  strokeWeight(2);
-  for (let i = 0; i < errors.length; i++) {
-    let nextX = x + GAMEFRAME_WIDTH / errors.length;
-    let nextY = GAMEFRAME_HEIGHT - errors[i] * 50;
-    line(x + GAMEFRAME_WIDTH, y + GAMEFRAME_HEIGHT, nextX, nextY);
-    x = nextX;
-    y = nextY;
-  }
-  fill(0);
-  stroke(1);
 }
 
 // This Redraws the Canvas when resized

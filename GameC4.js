@@ -1,13 +1,5 @@
 /* eslint-disable no-undef, no-unused-vars */
 
-const PLAYER1 = 1;
-const PLAYER2 = 2;
-const BLANK = 0;
-const WIN = 1;
-const LOSE = -1;
-const DRAWN = 0.5;
-const PLAYING = 0;
-
 class GameC4 {
   constructor(turn) {
     this.board = {};
@@ -118,11 +110,6 @@ class GameC4 {
     this.initialiseBoard();
   }
 
-  actRandomly() {
-    const validMoves = this.getValidMoves();
-    return validMoves[floor(random() * validMoves.length)];
-  }
-
   renderGame() {
     for (let i = 0; i < 6; i++) {
       for (let j = 0; j < 7; j++) {
@@ -188,6 +175,8 @@ class GameEnv {
     this.currentPlayer = 1;
 
     this.qlearn = qlearn;
+
+    this.finishedTraining = false;
   }
 
   getActions(state) {
@@ -244,22 +233,20 @@ class GameEnv {
   }
 
   update() {
-    let stat = this.step(turn);
-
-    // rotate players
-    if (turn === PLAYER1) {
-      turn = PLAYER2;
-    } else if (turn === PLAYER2) {
-      turn = PLAYER1;
-    }
-    //  debugger;
-
-    if (stat.status === WIN || stat.status === DRAWN) {
-      return stat.status;
-    }
+    // let stat = this.step(turn);
+    // // rotate players
+    // if (turn === PLAYER1) {
+    //   turn = PLAYER2;
+    // } else if (turn === PLAYER2) {
+    //   turn = PLAYER1;
+    // }
+    // //  debugger;
+    // if (stat.status === WIN || stat.status === DRAWN) {
+    //   return stat.status;
+    // }
   }
 
-  step(player) {
+  oldstep(player) {
     this.currentPlayer = player;
     // Perform random action, this also gets valid moves
     let gameStatus = 0;
@@ -324,6 +311,8 @@ class GameEnv {
     // reduce the explaration of the agent over time when it gains rewards (epislon)
     qlearn.reduceEpsilon(this.localGameStats.currentP1Reward);
   }
+
+  doStep() {}
 
   renderGameStatsWindow() {
     let left = this.gameStatsWindowLeft;
