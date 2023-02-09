@@ -1,23 +1,26 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 class QLearnGraph {
-  constructor(left, top, w, h, maxLen) {
+  constructor(left, top, w, h, maxLen, p1, p2) {
     this.graphLeft = left;
     this.graphTop = top;
     this.graphWidth = w;
     this.graphHeight = h;
     this.maxLength = maxLen;
     this.sum = 0;
+
+    this.p1 = p1;
+    this.p2 = p2;
   }
 
   drawQLGraph() {
     // Q learn agent
-    let maxReward = max(rewards);
-    let minReward = min(rewards);
+    let maxReward = max(this.p1);
+    let minReward = min(this.p1);
 
     // random or old agent through self-play
-    let maxOpReward = max(opponentRewards);
-    let minOpReward = min(opponentRewards);
+    let maxOpReward = max(this.p2);
+    let minOpReward = min(this.p2);
 
     // Draw graph window
     stroke(0);
@@ -26,16 +29,16 @@ class QLearnGraph {
     rect(this.graphLeft, this.graphTop, this.graphWidth, this.graphHeight);
 
     // plot the rewards for agent
-    for (let i = 0; i < rewards.length - 1; i++) {
+    for (let i = 0; i < this.p1.length - 1; i++) {
       let x1 = map(
         i,
         0,
-        rewards.length - 1,
+        this.p1.length - 1,
         this.graphLeft,
         this.graphLeft + this.graphWidth
       );
       let y1 = map(
-        rewards[i],
+        this.p1[i],
         minReward,
         maxReward,
         this.graphTop + this.graphHeight,
@@ -44,12 +47,12 @@ class QLearnGraph {
       let x2 = map(
         i + 1,
         0,
-        rewards.length - 1,
+        this.p1.length - 1,
         this.graphLeft,
         this.graphLeft + this.graphWidth
       );
       let y2 = map(
-        rewards[i + 1],
+        this.p1[i + 1],
         minReward,
         maxReward,
         this.graphTop + this.graphHeight,
@@ -59,16 +62,16 @@ class QLearnGraph {
     }
 
     // plot the rewards for the random or old agent
-    for (let i = 0; i < opponentRewards.length - 1; i++) {
+    for (let i = 0; i < this.p1.length - 1; i++) {
       let x1 = map(
         i,
         0,
-        opponentRewards.length - 1,
+        this.p2.length - 1,
         this.graphLeft,
         this.graphLeft + this.graphWidth
       );
       let y1 = map(
-        opponentRewards[i],
+        this.p2[i],
         minOpReward,
         maxOpReward,
         this.graphTop + this.graphHeight,
@@ -77,12 +80,12 @@ class QLearnGraph {
       let x2 = map(
         i + 1,
         0,
-        opponentRewards.length - 1,
+        this.p2.length - 1,
         this.graphLeft,
         this.graphLeft + this.graphWidth
       );
       let y2 = map(
-        opponentRewards[i + 1],
+        this.p2[i + 1],
         minOpReward,
         maxOpReward,
         this.graphTop + this.graphHeight,
@@ -104,20 +107,20 @@ class QLearnGraph {
     );
     fill(0);
     stroke(0);
-    text(
-      `Average Reward: ${(this.sum / rewards.length).toFixed(2)}`,
-      GAMEFRAME_WIDTH * 2 + 30,
-      20
-    );
+    // text(
+    //   `Average Reward: ${(this.sum / rewards.length).toFixed(2)}`,
+    //   GAMEFRAME_WIDTH * 2 + 30,
+    //   20
+    // );
   }
 
   clearOldData() {
-    if (rewards.length > 2000) {
-      rewards.shift();
+    if (this.p1.length > this.maxLength) {
+      this.p1.shift();
     }
 
-    if (opponentRewards.length > 2000) {
-      opponentRewards.shift();
+    if (this.p2.length > this.maxLength) {
+      this.p2.shift();
     }
   }
 

@@ -5,7 +5,7 @@ const MAX_EPISODES = 100;
 // hypervaribles
 const ALPHA = 0.2; // learning rate
 const GAMMA = 0.8; // discount function
-const EPSILON = 0.9; // rate of exploration
+const EPSILON = 0.5; // rate of exploration
 
 // Epsilon scaling
 const REWARD_SCALE = 500;

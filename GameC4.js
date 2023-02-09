@@ -121,16 +121,23 @@ class GameC4 {
         switch (this.board[i][j]) {
           case BLANK:
             fill(255);
+            rect(x, y, w, h);
             break;
           case PLAYER1:
+            fill(255);
+            rect(x, y, w, h);
             fill(0, 255, 0);
+            ellipse(x + w / 2, y + h / 2, w - 2);
+
             break;
           case PLAYER2:
+            fill(255);
+            rect(x, y, w, h);
             fill(0, 0, 255);
+            ellipse(x + w / 2, y + h / 2, w - 2);
             break;
           default:
         }
-        rect(x, y, w, h);
       }
     }
   }

@@ -67,18 +67,18 @@ class QLearnTurnBased {
     return this.qValues[key];
   }
 
-  updateQValues(state, action, reward, nextState) {
+  updateQValues(state, action, reward, nextState, actionSpace) {
     // Update the Q-value for the state-action pair based on the reward received and the estimated future reward
     // Q(state, action) = Q(state, action) + alpha * (reward + gamma * max(Q(nextState)) - Q(state, action))
-    let maxQNext = this.getMaxQValue(nextState);
+    let maxQNext = this.getMaxQValue(nextState, actionSpace);
     let key = `${state}-${action}`;
     this.qValues[key] =
       this.qValues[key] +
       this.alpha * (reward + this.gamma * maxQNext - this.qValues[key]);
   }
 
-  getMaxQValue(nextState) {
-    let actions = this.env.getActions(nextState);
+  getMaxQValue(nextState, actionSpace) {
+    let actions = actionSpace;
     let qValues = actions.map((action) => this.getQValue(nextState, action));
     return Math.max(...qValues);
   }

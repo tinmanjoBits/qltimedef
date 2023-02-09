@@ -35,31 +35,49 @@ function setup() {
   graph1 = new QLearnGraph(
     GAMEFRAME_WIDTH,
     GAMEFRAME_HEIGHT,
-    GAMEFRAME_WIDTH,
-    GAMEFRAME_HEIGHT,
-    1000
+    256,
+    256,
+    1000,
+    env4.agent.rewardsP1Array,
+    env4.agent.rewardsP2Array
   );
+
+  logMessage("New Game started, Player1 goes first !!");
 }
 
 function draw() {
   background(255);
 
+  if ((frameCount % 60) * 3 === 0) {
+    env4.simulationStep();
+    graph1.clearOldData();
+  }
+
   gc4.renderGame();
+  drawConsole();
+
+  if (env4) {
+    fill(0);
+    let turn = env4.agent.currentPlayer;
+    let move = env4.agent.currentAction;
+    text("Current Player:" + turn, GAMEFRAME_WIDTH, 30);
+    //text("Current Move:" + move, GAMEFRAME_WIDTH, 42);
+  }
+
+  graph1.drawQLGraph();
 }
 
 function simulationLoop() {}
 
-function keyPressed() {
-  env4.simulationStep();
-}
+function keyPressed() {}
 
 function drawConsole() {
   // Draw the console background
   fill(0);
-  rect(0, GAMEFRAME_HEIGHT, GAMEFRAME_WIDTH * 2, consoleHeight);
+  rect(0, GAMEFRAME_HEIGHT, GAMEFRAME_WIDTH, consoleHeight);
 
   // Display messages in the console
-  fill(255, 0, 0);
+  fill(0, 255, 0);
   textSize(12);
   let y = GAMEFRAME_HEIGHT;
   for (let i = 0; i < messages.length; i++) {
