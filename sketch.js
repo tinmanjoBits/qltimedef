@@ -26,7 +26,7 @@ function setup() {
   // rows = height / gridSize;
   // cols = width / gridSize;
 
-  frameCountSlider = createSlider(1, 10, 0);
+  frameCountSlider = createSlider(1, 100, 1);
 
   qlearn = new QLearnTurnBased(ALPHA, GAMMA, EPSILON);
   gc4 = new GameC4();
@@ -48,15 +48,8 @@ function setup() {
 function draw() {
   background(255);
 
-  // if ((frameCount % 60) * 3 === 0) {
-  //   env4.simulationStep();
-  //   graph1.clearOldData();
-  // }
-
-  for (let i = 0; i < frameCountSlider.value(); i++) {
-    env4.simulationStep();
-    graph1.clearOldData();
-  }
+  updateInFrameCount();
+  //updateInSliderValue()
 
   gc4.renderGame();
   drawConsole();
@@ -66,6 +59,18 @@ function draw() {
   }
 
   graph1.drawQLGraph();
+}
+
+function updateInSliderValue() {
+  // for (let i = 0; i < frameCountSlider.value(); i++) {
+  //}
+}
+
+function updateInFrameCount() {
+  if ((frameCount % 60) * 3 === 0) {
+    env4.simulationStep();
+    graph1.clearOldData();
+  }
 }
 
 function drawStats() {
