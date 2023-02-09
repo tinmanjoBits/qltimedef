@@ -48,7 +48,12 @@ function setup() {
 function draw() {
   background(255);
 
-  if ((frameCount % 60) * 3 === 0) {
+  // if ((frameCount % 60) * 3 === 0) {
+  //   env4.simulationStep();
+  //   graph1.clearOldData();
+  // }
+
+  for (let i = 0; i < frameCountSlider.value(); i++) {
     env4.simulationStep();
     graph1.clearOldData();
   }
@@ -57,14 +62,29 @@ function draw() {
   drawConsole();
 
   if (env4) {
-    fill(0);
-    let turn = env4.agent.currentPlayer;
-    let move = env4.agent.currentAction;
-    text("Current Player:" + turn, GAMEFRAME_WIDTH, 30);
-    //text("Current Move:" + move, GAMEFRAME_WIDTH, 42);
+    drawStats();
   }
 
   graph1.drawQLGraph();
+}
+
+function drawStats() {
+  fill(0);
+  let sp = 12;
+  let currentPlayer = env4.agent.currentPlayer;
+  let move = env4.agent.currentAction;
+  let lastPlayer = env4.agent.lastPlayer;
+  let p1reward = env4.agent.currentP1Reward;
+  let p1TotalRewards = env4.agent.totalRewardP1Sum;
+  let p2reward = env4.agent.currentP2Reward;
+  let p2TotalRewards = env4.agent.totalRewardP2Sum;
+  text("Current Player:" + currentPlayer, GAMEFRAME_WIDTH, 1 * sp);
+  text("Last Player:" + lastPlayer, GAMEFRAME_WIDTH, 2 * sp);
+  text("Player 1 reward:" + p1reward, GAMEFRAME_WIDTH, 3 * sp);
+  text("Player 1 Total rewards:" + p1TotalRewards, GAMEFRAME_WIDTH, 4 * sp);
+  text("Player 2 reward:" + p2reward, GAMEFRAME_WIDTH, 5 * sp);
+  text("Player 2 Total rewards:" + p2TotalRewards, GAMEFRAME_WIDTH, 6 * sp);
+  //text("Current Move:" + move, GAMEFRAME_WIDTH, 42);
 }
 
 function simulationLoop() {}

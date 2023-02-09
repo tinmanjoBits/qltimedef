@@ -27,7 +27,7 @@ class QLearnGraph {
     strokeWeight(2);
     fill(255);
     rect(this.graphLeft, this.graphTop, this.graphWidth, this.graphHeight);
-
+    fill(0, 255, 0);
     // plot the rewards for agent
     for (let i = 0; i < this.p1.length - 1; i++) {
       let x1 = map(
@@ -60,7 +60,7 @@ class QLearnGraph {
       );
       line(x1, y1, x2, y2);
     }
-
+    fill(0, 0, 255);
     // plot the rewards for the random or old agent
     for (let i = 0; i < this.p1.length - 1; i++) {
       let x1 = map(

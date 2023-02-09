@@ -67,7 +67,6 @@ class GameEnvironment {
   }
 
   calculateReward(lastPlayer) {
-    debugger;
     let reward = this.game.getGameStatus(lastPlayer);
 
     let value = 0; // if 0 then its a normal move play
@@ -76,13 +75,14 @@ class GameEnvironment {
     switch (reward) {
       case WIN:
         value = WIN;
-        logMessage("Game over, " + lastPlayer + "WON !");
+        logMessage("Game over, Player " + lastPlayer + " WON !");
         break;
       case LOSE:
         value = LOSE;
         break;
       case DRAWN:
         value = DRAWN;
+        debugger;
         logMessage("Game over, it was a draw !");
         break;
       default:
@@ -193,7 +193,8 @@ class AIAgent {
   constructor() {
     this.currentPlayer = PLAYER1;
     this.lastPlayer = "";
-    this.totalRewardSum = 0;
+    this.totalRewardP1Sum = 0;
+    this.totalRewardP2Sum = 0;
     this.rewardsP1Array = [];
     this.rewardsP2Array = [];
     this.totalRewardsArray = [];
@@ -207,14 +208,18 @@ class AIAgent {
     if (currentPlayer === PLAYER1) {
       if (reward === WIN) {
         this.currentP1Reward = WIN;
+        this.totalRewardP1Sum += WIN;
         this.currentP2Reward = LOSE;
+        this.totalRewardP2Sum += LOSE;
         this.rewardsP1Array.push(WIN);
         this.rewardsP2Array.push(LOSE);
       }
     } else if (currentPlayer === PLAYER2) {
       if (reward === WIN) {
         this.currentP1Reward = LOSE;
+        this.totalRewardP1Sum += LOSE;
         this.currentP2Reward = WIN;
+        this.totalRewardP2Sum += WIN;
         this.rewardsP1Array.push(LOSE);
         this.rewardsP2Array.push(WIN);
       }
